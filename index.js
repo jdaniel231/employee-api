@@ -1,5 +1,6 @@
 import express from 'express';
 import { UserRoute } from './Routes/UserRoute.js';
+import { EmployeeRoute } from './Routes/EmployeeRoute.js';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -19,6 +20,7 @@ app.use(cors({
 
 app.use(express.json());
 app.use('/auth', UserRoute);
+app.use('/employee', EmployeeRoute);
 app.use('/uploads', express.static(uploadsPath));
 
 // Rota para listar arquivos (depuração)
