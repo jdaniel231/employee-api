@@ -27,7 +27,7 @@ router.post('/employee_login', (req, res) => {
             { expiresIn: "1d" }
           );
           res.cookie('token', token);
-          return res.json({ loginStatus: true });
+          return res.json({ loginStatus: true, id: employee.id });
         } else {
           return res.json({ loginStatus: false, message: "wrong email or password" });
         }
@@ -35,6 +35,18 @@ router.post('/employee_login', (req, res) => {
     } else {
       return res.json({ loginStatus: false, message: "wrong email or password" });
     }
+  });
+});
+
+router.get('/details/:id', (req, res) => {
+  const { id } = req.params;
+  const query = "SELECT * FROM employees WHERE id = $1";
+  
+  pool.query(query, [id], (err, result) => {
+    if (err) {
+      return res.json({ Status: false, message: err.message });
+    }
+    return res.json({ Status: true, Result: result.rows[0] });
   });
 });
 

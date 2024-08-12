@@ -3,12 +3,6 @@ import { UserRoute } from './Routes/UserRoute.js';
 import { EmployeeRoute } from './Routes/EmployeeRoute.js';
 import cors from 'cors';
 import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const uploadsPath = path.resolve(__dirname, '../server/Uploads');
 
 const app = express();
 
@@ -21,17 +15,21 @@ app.use(cors({
 app.use(express.json());
 app.use('/auth', UserRoute);
 app.use('/employee', EmployeeRoute);
-app.use('/uploads', express.static(uploadsPath));
+
+// Ajuste o caminho da pasta 'Public/Images' para 'public/images'
+app.use('/images', express.static(path.join(process.cwd(), 'Public', 'Images')));
 
 // Rota para listar arquivos (depuração)
-app.get('/list-uploads', (req, res) => {
-  const fs = import('fs');
-  fs.readdir(uploadsPath, (err, files) => {
-    if (err) {
-      console.error("Error reading uploads directory:", err);
-      return res.status(500).json({ Status: false, message: err.message });
-    }
-    res.json({ Status: true, files });
+app.get('/list-images', (req, res) => {
+  import('fs').then(fs => {
+    const imagesPath = path.join(process.cwd(), 'Public', 'Images');
+    fs.readdir(imagesPath, (err, files) => {
+      if (err) {
+        console.error("Error reading images directory:", err);
+        return res.status(500).json({ Status: false, message: err.message });
+      }
+      res.json({ Status: true, files });
+    });
   });
 });
 
