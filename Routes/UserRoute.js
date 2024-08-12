@@ -8,7 +8,7 @@ const router = express.Router();
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'Uploads/');
+    cb(null, 'Public/Images/');
   },
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}-${file.originalname}`);
@@ -100,7 +100,7 @@ router.post('/add_category', (req, res) => {
 
 router.get('/employee', (req, res) => {
   const sql = `
-    SELECT e.id, e.name, e.email, e.salary, e.address, c.name as category_name
+    SELECT e.id, e.name, e.email, e.salary, e.address, e.image, c.name as category_name
     FROM employees e
     JOIN categories c ON e.category_id = c.id
   `;
@@ -112,6 +112,7 @@ router.get('/employee', (req, res) => {
     return res.json({ Status: true, Result: result.rows });
   });
 });
+
 
 router.post('/add_employee', upload.single('image'), (req, res) => {
   const { name, email, password, address, salary, category_id } = req.body;
