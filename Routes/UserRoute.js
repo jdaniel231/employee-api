@@ -18,6 +18,17 @@ const upload = multer({ storage: storage });
 
 // Admin Routes
 
+router.get('/admin_records', (req, res) => {
+  const sql = "SELECT * FROM users WHERE role = 'admin'";
+  pool.query(sql, (err, result) => {
+    if (err) {
+      console.error("Error getting admin:", err);
+      return res.status(500).json({ Status: false, Message: err.message });
+    }
+    return res.json({ Status: true, Result: result.rows });
+  });
+});
+
 router.post('/adminlogin', (req, res) => {
   const { email, password } = req.body;
   const query = "SELECT * FROM users WHERE email = $1 AND password = $2";
@@ -39,6 +50,22 @@ router.post('/adminlogin', (req, res) => {
       return res.json({ loginStatus: false, message: "wrong email or password" });
     }
   });
+});
+
+router.get('/admin_count', (req, res) => {
+  const sql = "SELECT COUNT(*) FROM users WHERE role = 'admin'";
+  pool.query(sql, (err, result) => {
+    if (err) {
+      console.error("Error getting admin count:", err);
+      return res.status(500).json({ Status: false, Message: err.message });
+    }
+    return res.json({ Status: true, Result: result.rows[0].count });
+  });
+});
+
+router.get('/logout', (req, res) => {
+  res.clearCookie('token');
+  return res.json({ Status: true, message: 'Sessão encerrada com sucesso' });
 });
 
 // Category Routes
@@ -168,5 +195,26 @@ router.delete('/delete_employee/:id', (req, res) => {
   });
 });
 
+router.get('/employee_count', (req, res) => {
+  const sql = "SELECT COUNT(*) FROM employees";
+  pool.query(sql, (err, result) => {
+    if (err) {
+      console.error("Error getting employee count:", err);
+      return res.status(500).json({ Status: false, Message: err.message });
+    }
+    return res.json({ Status: true, Result: result.rows[0].count });
+  });
+});
+
+router.get('/salary_count', (req, res) => {
+  const sql = "SELECT SUM(salary) FROM employees";
+  pool.query(sql, (err, result) => {
+    if (err) {
+      console.error("Error getting salary count:", err);
+      return res.status(500).json({ Status: false, Message: err.message });
+    }
+    return res.json({ Status: true, Result: result.rows[0].sum });
+  });
+});
 
 export { router as UserRoute };
