@@ -19,23 +19,6 @@ app.use(cookieParser());
 app.use('/auth', UserRoute);
 app.use('/employee', EmployeeRoute);
 
-// const verifyUser = (req, res, next) => {
-//   const token = req.cookies.token;
-//   if (token) {
-//     Jwt.verify(token, "jwt_secret_key", (err, decoded) => {
-//       if (err) {
-//         return res.status(401).json({ Status: false, message: 'Você não está autenticado' });
-//         req.id = decoded.email;
-//         req.role = decoded.role;
-//         next();
-//       }
-//       next();
-//     });
-//   } else {
-//     return res.status(401).json({ Status: false, message: 'Você não está autenticado' });
-//   }
-// };
-
 const verifyUser = (req, res, next) => {
   const token = req.cookies.token;
   if(token) {
