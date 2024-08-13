@@ -22,7 +22,7 @@ router.post('/employee_login', (req, res) => {
         }
         if (isMatch) {
           const token = jwt.sign(
-            { role: "employee", email: employee.email }, 
+            { role: "employee", email: employee.email, id: employee.id },
             "jwt_secret_key", 
             { expiresIn: "1d" }
           );
@@ -49,5 +49,11 @@ router.get('/details/:id', (req, res) => {
     return res.json({ Status: true, Result: result.rows[0] });
   });
 });
+
+router.get('/logout', (req, res) => {
+  res.clearCookie('token');
+  return res.json({ Status: true, message: 'Sessão encerrada com sucesso' });
+});
+
 
 export { router as EmployeeRoute };
